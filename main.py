@@ -80,18 +80,32 @@ def get_research() -> dict:
     Attempts to read cached research from the Railway volume.
     Falls back to running a fresh scrape if cache is expired or missing.
     """
-    cache_hours = cfg.research_cache_hours
+    # Ensure the persistent directory exists so glob doesn't error out
+    os.makedirs(PERSISTENT_DIR, exist_ok=True)
     
-    # Check the persistent directory path instead of /tmp
+    cache_hours = getattr(cfg, 'research_cache_hours', 24)
+    
+    # Define and look for the specific pattern inside the persistent volume
     search_pattern = os.path.join(PERSISTENT_DIR, "research_report_*.json")
     reports = sorted(glob.glob(search_pattern), reverse=True)
     
+    # Debug statements to trace volume tracking in your Railway console logs
+    print(f"[CACHE DEBUG] Scanning path: {search_pattern}")
+    print(f"[CACHE DEBUG] Active files found in volume: {reports}")
+    
     if reports:
-        age = time.time() - os.path.getmtime(reports[0])
-        if age < cache_hours * 3600:
-            print(f"Using cached research ({int(age/3600)}h old)")
-            with open(reports[0]) as f:
-                return json.load(f)
+        try:
+            age = time.time() - os.path.getmtime(reports[0])
+            print(f"[CACHE DEBUG] Most recent file age: {int(age / 3600)} hours")
+            
+            if age < cache_hours * 3600:
+                print(f"Using cached research ({int(age / 3600)}h old): {os.path.basename(reports[0])}")
+                with open(reports[0], 'r') as f:
+                    return json.load(f)
+            else:
+                print(f"[CACHE] Cache file found but it has expired (older than {cache_hours} hours).")
+        except Exception as e:
+            print(f"[CACHE ERROR] Failed reading cache file: {e}")
                 
     print("Running fresh research...")
     return run_research()
