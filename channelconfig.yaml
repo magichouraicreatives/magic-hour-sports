@@ -49,6 +49,7 @@ schedule:
 platforms:
   - tiktok
   - instagram
+  - youtube
 
 # ============================================================
 #  API KEYS & CREDENTIALS
