@@ -2,7 +2,6 @@ import glob
 import os
 from magic_hour import Client
 from dotenv import load_dotenv
-import requests
 
 load_dotenv()
 

@@ -30,12 +30,11 @@ def _call_gemini(prompt_text: str) -> dict:
         print(f"Gemini API error: {e}")
         return {}
 
-
 def generate_prompt(research_report: dict = None) -> dict:
     """
     Reads the creative brief from user_system_prompt.txt, injects current
     trend research, and returns a structured video prompt package.
-    Called by main.py on every scheduled slot.
+    Accommodates both archival anomalies and absurd sports stunts.
     """
     if not os.path.exists(SYSTEM_PROMPT_FILE):
         print(f"ERROR: '{SYSTEM_PROMPT_FILE}' not found.")
@@ -64,8 +63,8 @@ Dominant emotions: {[e.get("emotion") for e in top_emotions[:2]]}
 ---
 Return ONLY valid JSON matching this exact schema — no markdown, no extra keys:
 {
-    "sora_prompt": "Physically descriptive prompt for an AI video model. Exact actions, subjects, colors, lighting, framing. Max 60 words.",
-    "motion_prompt": "4-9 second seamless loop instructions. Gentle loopable motion only — drifting, swaying, flickering. Max 40 words.",
+    "sora_prompt": "Simple, natural prompt. Focus entirely on the core action, environment, and physical interaction (whether an archival anomaly or an absurd sports stunt). No complex camera directions or heavy descriptive fluff. Max 50 words.",
+    "motion_prompt": "4-9 second seamless loop instructions. Minimal, natural motion like camera tracking, crowd reactions, or environmental drifting. Max 35 words.",
     "visual_concept": "One sentence capturing the core creative theme.",
     "caption": "Short scroll-stopping social caption. Under 10 words.",
     "hashtags": ["#relevant", "#hashtags", "#here"],
